@@ -1,5 +1,7 @@
 import numpy as np
 from typing import List
+import random
+import json
 
 from diffusers import StableDiffusionControlNetPipeline, ControlNetModel, UniPCMultistepScheduler
 import torch
@@ -83,3 +85,113 @@ class SDCN:
         )
 
         return output
+
+
+class prompt:
+    def __init__(self, VOCAB_TEMPLATE_PATH) -> None:
+        
+        self.vocabulary = json.load(open(VOCAB_TEMPLATE_PATH))['vocabulary']
+        
+        self.prompt_templates = json.load(open(VOCAB_TEMPLATE_PATH))['prompt_templates']
+    
+    # Promts given for modification
+    def max_num_prompts(self, phrase: str) -> int:
+        '''
+        # Calculates the maximum number of prompts that can be generated for the given phrase
+        Args: phrase; str; The basic prompt that needs to be changed based on options in vocabulary
+        
+        Returns: num_prompts; int; The maximum number of prompts that can be generated for the given phrase
+        '''
+
+        num_prompts = 1
+        phrase_list = phrase.lower().split()
+        for phrase_loc in range(len(phrase_list)):
+            for vocabulary_class in self.vocabulary.keys():
+                if phrase_list[phrase_loc] in self.vocabulary[vocabulary_class]:
+                    num_prompts = num_prompts * len(self.vocabulary[vocabulary_class])
+                    break
+        
+        return(num_prompts)
+
+    def prompts(self, num_prompts: int, phrase: str) -> list:
+        '''
+        # Generates unique prompts in the format of the given phrase
+        Args: num_prompts; int; Number of prompts that are required including 'phrase' (num_prompts given by max_num_prompts is used if this value is greater than maximum number of possible prompts)
+              phrase; str; The basic prompt that needs to be changed based on options in vocabulary
+
+        Returns: phrase_list; list; A list of unique prompts in the format of given phrase
+        '''
+
+        phrase_list = []
+        phrase_list.extend([phrase.lower()])
+        num_prompts = min(num_prompts, self.max_num_prompts(phrase))
+        while(len(phrase_list) < num_prompts):
+            new_phrase_list = phrase_list[0].lower().split()
+            for phrase_loc in range(len(new_phrase_list)):
+                for vocabulary_class in self.vocabulary.keys():
+                    if new_phrase_list[phrase_loc] in self.vocabulary[vocabulary_class]:
+                        new_phrase_list[phrase_loc] = random.choice(self.vocabulary[vocabulary_class])
+                        break
+            new_phrase = ' '.join(new_phrase_list)
+            if new_phrase not in phrase_list:
+                phrase_list.extend([new_phrase])
+        
+        return phrase_list
+    
+    # Templates given for reference
+    def max_template_prompts(self) -> int:
+        ''''
+        # Counts the maximum number of template prompts that can be generated with the exisitng prompt_templates
+        Args: None
+        Returns: counter; int; maximum number of prompts that can be generated from prompt_templates
+        '''
+
+        counter = 0
+        for phrase in self.phrase_templates:
+            phrase_counter = 1
+            phrase_list = phrase.split()
+            for phrase_word in phrase_list:
+                vocab_counter = 0
+                if 'color' in phrase_word:
+                    vocab_counter = len(self.vocabulary['color'])
+                elif 'opt' in phrase_word:
+                    vocab_counter = len(self.vocabulary[phrase_word[4:]])
+                if vocab_counter>0:
+                    phrase_counter = phrase_counter*vocab_counter
+                    continue
+            counter = counter + phrase_counter
+        
+        return counter
+    
+    def template_prompts(self, num_prompts: int) -> list:
+        '''
+        # Generates unique prompts from the template prompts
+        Args: num_prompts; int; number of prompts that are required
+        Returns: phrases; list; list of prompts
+        '''
+       
+        phrases = []
+        num_phrases = min(num_prompts, self.max_template_prompts())
+        
+        while(len(phrases) < num_phrases):
+            phrase = random.choice(self.prompt_templates)
+            color_count = phrase.count('opt_color')
+            new_phrase = [phrase
+                          .replace('opt_gender',random.choice(self.vocabulary['gender']))
+                          .replace('opt_age',random.choice(self.vocabulary['age']))
+                          .replace('opt_size',random.choice(self.vocabulary['size']))
+                          .replace('opt_height',random.choice(self.vocabulary['height']))
+                          .replace('opt_clothes_top',random.choice(self.vocabulary['clothes_top']))
+                          .replace('opt_clothes_bottom',random.choice(self.vocabulary['clothes_bottom']))
+                          .replace('opt_accessories',random.choice(self.vocabulary['accessories']))
+                          .replace('opt_ground',random.choice(self.vocabulary['ground']))
+                          .replace('opt_background',random.choice(self.vocabulary['background']))]
+            
+            for c in range(color_count+1):
+                new_phrase = [new_phrase[0]
+                            .replace(f'opt_color{c}',random.choice(self.vocabulary['color']))]
+            
+            if new_phrase[0] not in phrases:
+                phrases.extend(new_phrase)
+
+        return(phrases)
