@@ -8,7 +8,6 @@
 
 import os
 import sys
-# import sphinx_rtd_theme
 sys.path.insert(0, os.path.abspath('..'))
 
 project = 'Data Augmentation Using Stable Diffusion with ControNet for Object Detection'
@@ -19,7 +18,7 @@ release = '1.0.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.autodoc']#, 'sphinx_rtd_theme']
+extensions = ['sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.autodoc']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
