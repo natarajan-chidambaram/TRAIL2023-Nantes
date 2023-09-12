@@ -12,3 +12,7 @@ sphinx:
   configuration: sphinx_docs/conf.py
 
 formats: []
+
+python:
+   install:
+   - requirements: requirements.txt
