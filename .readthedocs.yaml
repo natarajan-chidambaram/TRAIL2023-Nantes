@@ -10,3 +10,5 @@ build:
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:
   configuration: conf/config.yaml
+
+formats: []
