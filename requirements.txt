@@ -14,4 +14,4 @@ pycocotools
 transformers
 wandb
 wget
-sphinx_rtd_theme
+sphinx-rtd-theme
