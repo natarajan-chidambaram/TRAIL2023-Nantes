@@ -12,7 +12,6 @@ pillow
 pyiqa
 pycocotools
 transformers
-xformers
 wandb
 wget
 zipfile
