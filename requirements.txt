@@ -3,7 +3,7 @@ controlnet_aux
 diffusers==0.14.0
 gdown
 hydra-core
-mediapipe==0.10.0
+mediapipe==0.10.3
 matplotlib
 numpy
 opencv-contrib-python
