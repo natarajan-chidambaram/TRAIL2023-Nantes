@@ -1,0 +1,6 @@
+In the root directory execute:
+sphinx-apidoc -o shphinx_docs .
+
+In index.rst, add "modules" (without quotes) above the Indices and tables section with indent
+
+Either do "make html" in terminal for checking, or push to GitHub for compiling using ReadTheDocs
