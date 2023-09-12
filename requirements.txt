@@ -14,4 +14,3 @@ pycocotools
 transformers
 wandb
 wget
-zipfile
