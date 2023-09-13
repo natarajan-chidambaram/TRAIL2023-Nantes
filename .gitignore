@@ -171,3 +171,7 @@ datasets*
 multirun*
 .vscode*
 .DS_Store
+sphinx_docs/_build/doctrees
+.doctrees
+.html
+
