@@ -1,100 +1,150 @@
 <!DOCTYPE html>
-
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>create_dataset &#8212; Data Augmentation Using Stable Diffusion with ControNet for Object Detection 1.0.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=af2ce170"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>create_dataset &mdash; Data Augmentation Using Stable Diffusion with ControNet for Object Detection 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=af2ce170"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
 
-  </head><body>
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
           
+          
+          <a href="../index.html" class="icon icon-home">
+            Data Augmentation Using Stable Diffusion with ControNet for Object Detection
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">TRAIL2023-Nantes</a></li>
+</ul>
 
-          <div class="body" role="main">
-            
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Data Augmentation Using Stable Diffusion with ControNet for Object Detection</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">create_dataset</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <h1>Source code for create_dataset</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
-
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">logger</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">import</span> <span class="nn">hydra</span>
+<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">glob</span>
 
-<div class="viewcode-block" id="create_mixte_dataset"><a class="viewcode-back" href="../create_dataset.html#create_dataset.create_mixte_dataset">[docs]</a><span class="k">def</span> <span class="nf">create_mixte_dataset</span><span class="p">(</span><span class="n">real_images_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">syn_images_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">txt_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">per_syn_data</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n_file</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<div class="viewcode-block" id="create_mixte_dataset"><a class="viewcode-back" href="../create_dataset.html#create_dataset.create_mixte_dataset">[docs]</a><span class="k">def</span> <span class="nf">create_mixte_dataset</span><span class="p">(</span><span class="n">real_images_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">synth_images_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">txt_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">per_synth_data</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n_file</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">formats</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="s1">&#39;jpeg&#39;</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Construct the txt file containing a percentage of real and synthetic data</span>
 <span class="sd">    :param real_images_dir: path to the folder containing real images</span>
-<span class="sd">    :param syn_images_dir: path to the folder containing synthetic images</span>
+<span class="sd">    :param synth_images_dir: path to the folder containing synthetic images</span>
 <span class="sd">    :param txt_dir: path used to create the txt file</span>
-<span class="sd">    :param per_syn_data: float, [0, 1], percentage of synthetic data compared to real ones</span>
+<span class="sd">    :param per_synth_data: float, [0, 1], percentage of synthetic data compared to real ones</span>
 <span class="sd">    :param n_file: int, number of the file used for the txt and yaml names</span>
 <span class="sd">    :return: /</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">set</span> <span class="o">=</span> <span class="s1">&#39;train&#39;</span>
-    <span class="n">txt_dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt_dir</span><span class="p">,</span> <span class="nb">set</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)</span>
+    <span class="n">train_txt_path</span> <span class="o">=</span> <span class="n">txt_dir</span> <span class="o">/</span> <span class="s1">&#39;train.txt&#39;</span>
+    <span class="n">val_txt_path</span> <span class="o">=</span> <span class="n">txt_dir</span> <span class="o">/</span> <span class="s1">&#39;val.txt&#39;</span>
+    <span class="n">test_txt_path</span> <span class="o">=</span> <span class="n">txt_dir</span> <span class="o">/</span> <span class="s1">&#39;test.txt&#39;</span>
+    <span class="n">data_yaml_path</span> <span class="o">=</span> <span class="n">txt_dir</span> <span class="o">/</span> <span class="s1">&#39;data.yaml&#39;</span>
 
-    <span class="n">real_images_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">real_images_dir</span><span class="p">,</span> <span class="s1">&#39;images/&#39;</span><span class="p">)</span>
-    <span class="n">real_images_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">real_images_path</span><span class="p">)</span>
-    <span class="n">real_images</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">real_images_path</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">real_images</span> <span class="ow">and</span> <span class="n">real_images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.DS_Store&#39;</span><span class="p">:</span> <span class="n">real_images</span> <span class="o">=</span> <span class="n">real_images</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">real_images_path</span> <span class="o">=</span> <span class="n">real_images_dir</span> <span class="o">/</span> <span class="s1">&#39;images&#39;</span>
+    <span class="n">val_images_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">real_images_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/real/&#39;</span><span class="p">,</span> <span class="s1">&#39;/val/&#39;</span><span class="p">))</span>
+    <span class="n">test_images_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">real_images_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/real/&#39;</span><span class="p">,</span> <span class="s1">&#39;/test/&#39;</span><span class="p">))</span>
+    
+    <span class="n">real_images</span> <span class="o">=</span> <span class="n">list_images</span><span class="p">(</span><span class="n">real_images_path</span><span class="p">,</span> <span class="n">formats</span><span class="p">)</span>
+    <span class="n">synth_images</span> <span class="o">=</span> <span class="n">list_images</span><span class="p">(</span><span class="n">synth_images_dir</span><span class="p">,</span> <span class="n">formats</span><span class="p">)</span>
+    <span class="n">val_images</span> <span class="o">=</span> <span class="n">list_images</span><span class="p">(</span><span class="n">val_images_path</span><span class="p">,</span> <span class="n">formats</span><span class="p">)</span>
+    <span class="n">test_images</span> <span class="o">=</span> <span class="n">list_images</span><span class="p">(</span><span class="n">test_images_path</span><span class="p">,</span> <span class="n">formats</span><span class="p">)</span>
+    
+    <span class="c1"># shuffle images</span>
     <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">real_images</span><span class="p">)</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">synth_images</span><span class="p">)</span>
 
-    <span class="n">nb_real_images</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">real_images</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">per_syn_data</span><span class="p">))</span>
-    <span class="n">nb_syn_images</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">real_images</span><span class="p">)</span> <span class="o">*</span> <span class="n">per_syn_data</span><span class="p">)</span>
-    <span class="n">aorw</span> <span class="o">=</span> <span class="s1">&#39;w&#39;</span>
-    <span class="k">if</span> <span class="n">per_syn_data</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="c1">#syn_images_path = os.path.join(syn_images_dir, set, &#39;images/&#39;)</span>
-        <span class="n">syn_images</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">syn_images_dir</span><span class="p">))</span><span class="c1">#syn_images_path))</span>
-        <span class="k">if</span> <span class="n">syn_images</span> <span class="ow">and</span> <span class="n">syn_images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.DS_Store&#39;</span><span class="p">:</span> <span class="n">syn_images</span> <span class="o">=</span> <span class="n">syn_images</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">syn_images</span><span class="p">)</span>
-        <span class="n">syn_images</span> <span class="o">=</span> <span class="n">syn_images</span><span class="p">[:</span><span class="n">nb_syn_images</span><span class="p">]</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">txt_dir_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">syn_images</span><span class="p">:</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="n">syn_images_dir</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">aorw</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
+    <span class="c1"># nb_real_images = int(len(real_images) * (1 - per_synth_data))</span>
+    <span class="n">nb_synth_images</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">real_images</span><span class="p">)</span> <span class="o">*</span> <span class="n">per_synth_data</span><span class="p">)</span>
 
-    <span class="n">real_images</span> <span class="o">=</span> <span class="n">real_images</span><span class="p">[:</span><span class="n">nb_real_images</span><span class="p">]</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">txt_dir_path</span><span class="p">,</span> <span class="n">aorw</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">real_images</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">real_images_path</span><span class="p">,</span> <span class="n">image</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">real_images</span> <span class="o">=</span> <span class="n">real_images</span>
+    <span class="n">synth_images</span> <span class="o">=</span> <span class="n">synth_images</span><span class="p">[:</span><span class="n">nb_synth_images</span><span class="p">]</span>
 
-    <span class="n">sets</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">]</span>
-    <span class="k">for</span> <span class="nb">set</span> <span class="ow">in</span> <span class="n">sets</span><span class="p">:</span>
-        <span class="n">real_images_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">real_images_dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;real&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">set</span><span class="p">,</span> <span class="s1">&#39;images/&#39;</span><span class="p">)</span>
-        <span class="n">real_images_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">real_images_path</span><span class="p">)</span>
-        <span class="n">real_images</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">real_images_path</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">real_images</span> <span class="ow">and</span> <span class="n">real_images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.DS_Store&#39;</span><span class="p">:</span> <span class="n">real_images</span> <span class="o">=</span> <span class="n">real_images</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">real_images</span><span class="p">)</span>
+    <span class="n">train_images</span> <span class="o">=</span> <span class="n">real_images</span> <span class="o">+</span> <span class="n">synth_images</span>
 
-        <span class="n">txt_dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt_dir</span><span class="p">,</span> <span class="nb">set</span>  <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">txt_dir_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">real_images</span><span class="p">:</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">real_images_path</span><span class="p">,</span> <span class="n">image</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-            
-    <span class="n">yaml_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt_dir</span><span class="p">,</span> <span class="s1">&#39;coco&#39;</span> <span class="o">+</span><span class="s1">&#39;.yaml&#39;</span><span class="p">))</span>  
-    <span class="n">create_yaml_file</span><span class="p">(</span><span class="n">txt_dir</span><span class="p">,</span> <span class="n">yaml_dir</span><span class="p">)</span></div>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">train_txt_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">train_images</span><span class="p">))</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">val_txt_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">val_images</span><span class="p">))</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_txt_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_images</span><span class="p">))</span>
+
+    
+    <span class="n">create_yaml_file</span><span class="p">(</span>
+        <span class="n">data_yaml_path</span><span class="p">,</span> 
+        <span class="n">train_txt_path</span><span class="p">,</span>
+        <span class="n">val_txt_path</span><span class="p">,</span>
+        <span class="n">test_txt_path</span>
+    <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="create_yaml_file"><a class="viewcode-back" href="../create_dataset.html#create_dataset.create_yaml_file">[docs]</a><span class="k">def</span> <span class="nf">create_yaml_file</span><span class="p">(</span><span class="n">txt_dir</span><span class="p">,</span> <span class="n">yaml_dir</span><span class="p">):</span>
+<div class="viewcode-block" id="list_images"><a class="viewcode-back" href="../create_dataset.html#create_dataset.list_images">[docs]</a><span class="k">def</span> <span class="nf">list_images</span><span class="p">(</span><span class="n">images_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">formats</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="n">images</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="nb">format</span> <span class="ow">in</span> <span class="n">formats</span><span class="p">:</span>
+        <span class="n">images</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="o">*</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">images_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;/*.</span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="k">return</span> <span class="n">images</span></div>
+
+
+<div class="viewcode-block" id="create_yaml_file"><a class="viewcode-back" href="../create_dataset.html#create_dataset.create_yaml_file">[docs]</a><span class="k">def</span> <span class="nf">create_yaml_file</span><span class="p">(</span><span class="n">save_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">train</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Construct the yaml file</span>
 <span class="sd">    :param txt_dir: path used to create the txt files</span>
@@ -103,99 +153,56 @@
 <span class="sd">    :return: /</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">yaml_file</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;train&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt_dir</span><span class="p">,</span> <span class="s1">&#39;train.txt&#39;</span><span class="p">)),</span>
-                    <span class="s1">&#39;val&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt_dir</span><span class="p">,</span> <span class="s1">&#39;val.txt&#39;</span><span class="p">)),</span>
-                    <span class="s1">&#39;test&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt_dir</span><span class="p">,</span> <span class="s1">&#39;test.txt&#39;</span><span class="p">)),</span>
-                    <span class="s1">&#39;names&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;person&#39;</span><span class="p">}</span>
-                <span class="p">}</span>
-    <span class="n">yaml_file</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">txt_dir</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">yaml_dir</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="s1">&#39;train&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">train</span><span class="o">.</span><span class="n">absolute</span><span class="p">()),</span>
+        <span class="s1">&#39;val&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">absolute</span><span class="p">()),</span>
+        <span class="s1">&#39;test&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">absolute</span><span class="p">()),</span>
+        <span class="s1">&#39;names&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;person&#39;</span><span class="p">}</span>
+    <span class="p">}</span>
+    
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
         <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">yaml_file</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="run"><a class="viewcode-back" href="../create_dataset.html#create_dataset.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Create custom train.txt, valid.txt and test.txt.&quot;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--real_images_dir&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to the folder that contains the real images&quot;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--syn_images_dir&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to the folder that contains the synthetic images&quot;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--txt_dir&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Path used to create the txt file&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--per_syn_data&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Percentage of synthetic data compared to real ones used for pre-training&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--n_file&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Number of the file&#39;</span><span class="p">)</span>
-    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Command line arguments: </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="n">create_mixte_dataset</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">real_images_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">syn_images_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">txt_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">per_syn_data</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">n_file</span><span class="p">)</span></div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../create_dataset.html#create_dataset.main">[docs]</a><span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">version_base</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_path</span><span class="o">=</span><span class="s2">&quot;conf&quot;</span><span class="p">,</span> <span class="n">config_name</span><span class="o">=</span><span class="s2">&quot;config&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span> <span class="p">:</span> <span class="n">DictConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">data_path</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;data_path&#39;</span><span class="p">]</span>
+    <span class="n">base_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">data_path</span><span class="p">[</span><span class="s1">&#39;base&#39;</span><span class="p">])</span>
+    <span class="n">REAL_DATA_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">base_path</span><span class="p">)</span> <span class="o">/</span> <span class="n">data_path</span><span class="p">[</span><span class="s1">&#39;real&#39;</span><span class="p">]</span>
+
+    <span class="n">GEN_DATA_PATH</span> <span class="o">=</span>  <span class="n">Path</span><span class="p">(</span><span class="n">base_path</span><span class="p">)</span> <span class="o">/</span> <span class="n">data_path</span><span class="p">[</span><span class="s1">&#39;generated&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">][</span><span class="s1">&#39;cn_use&#39;</span><span class="p">]</span>
+
+    <span class="n">create_mixte_dataset</span><span class="p">(</span><span class="n">REAL_DATA_PATH</span><span class="p">,</span> <span class="n">GEN_DATA_PATH</span><span class="p">,</span> <span class="n">REAL_DATA_PATH</span><span class="p">,</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;ml&#39;</span><span class="p">][</span><span class="s1">&#39;augmentation_percent&#39;</span><span class="p">])</span></div>
+
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">run</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">()</span>
 </pre></div>
 
+           </div>
           </div>
-          
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Ahmad Hammoudeh, Anh-Thu Phan-Ho, Dany Rimez, Hamed Razavi, Horacio Tellez, Matei Mancas, Mohamed Benkedadra, Natarajan Chidambaram, Tiffanie Godelaine.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">Data Augmentation Using Stable Diffusion with ControNet for Object Detection</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../modules.html">TRAIL2023-Nantes</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2023, Ahmad Hammoudeh, Anh-Thu Phan-Ho, Dany Rimez, Hamed Razavi, Horacio Tellez, Matei Mancas, Mohamed Benkedadra, Natarajan Chidambaram, Tiffanie Godelaine.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
-      
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

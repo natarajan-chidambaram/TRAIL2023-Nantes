@@ -44,13 +44,15 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">About</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">TRAIL2023-Nantes</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="coco.html">coco module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="common.html">common module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">create_dataset module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#create_dataset.create_mixte_dataset"><code class="docutils literal notranslate"><span class="pre">create_mixte_dataset()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#create_dataset.create_yaml_file"><code class="docutils literal notranslate"><span class="pre">create_yaml_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#create_dataset.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create_dataset.list_images"><code class="docutils literal notranslate"><span class="pre">list_images()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create_dataset.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="extractors.html">extractors module</a></li>
@@ -60,6 +62,7 @@
 <li class="toctree-l2"><a class="reference internal" href="logger.html">logger module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="prep_coco.html">prep_coco module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="test.html">test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="train.html">train module</a></li>
 </ul>
 </li>
 </ul>
@@ -93,19 +96,19 @@
 <span id="create-dataset-module"></span><h1>create_dataset module<a class="headerlink" href="#module-create_dataset" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_dataset.create_mixte_dataset">
-<span class="sig-prename descclassname"><span class="pre">create_dataset.</span></span><span class="sig-name descname"><span class="pre">create_mixte_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">real_images_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">syn_images_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">txt_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_syn_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_dataset.html#create_mixte_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_dataset.create_mixte_dataset" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">create_dataset.</span></span><span class="sig-name descname"><span class="pre">create_mixte_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">real_images_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">synth_images_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">txt_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_synth_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formats</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['jpg',</span> <span class="pre">'png',</span> <span class="pre">'jpeg']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_dataset.html#create_mixte_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_dataset.create_mixte_dataset" title="Permalink to this definition"></a></dt>
 <dd><p>Construct the txt file containing a percentage of real and synthetic data
 :param real_images_dir: path to the folder containing real images
-:param syn_images_dir: path to the folder containing synthetic images
+:param synth_images_dir: path to the folder containing synthetic images
 :param txt_dir: path used to create the txt file
-:param per_syn_data: float, [0, 1], percentage of synthetic data compared to real ones
+:param per_synth_data: float, [0, 1], percentage of synthetic data compared to real ones
 :param n_file: int, number of the file used for the txt and yaml names
 :return: /</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="create_dataset.create_yaml_file">
-<span class="sig-prename descclassname"><span class="pre">create_dataset.</span></span><span class="sig-name descname"><span class="pre">create_yaml_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaml_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_dataset.html#create_yaml_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_dataset.create_yaml_file" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">create_dataset.</span></span><span class="sig-name descname"><span class="pre">create_yaml_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_dataset.html#create_yaml_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_dataset.create_yaml_file" title="Permalink to this definition"></a></dt>
 <dd><p>Construct the yaml file
 :param txt_dir: path used to create the txt files
 :param yaml_dir: path used to create the yaml file
@@ -114,8 +117,13 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="create_dataset.run">
-<span class="sig-prename descclassname"><span class="pre">create_dataset.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_dataset.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_dataset.run" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="create_dataset.list_images">
+<span class="sig-prename descclassname"><span class="pre">create_dataset.</span></span><span class="sig-name descname"><span class="pre">list_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formats</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_dataset.html#list_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_dataset.list_images" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="create_dataset.main">
+<span class="sig-prename descclassname"><span class="pre">create_dataset.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/create_dataset.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_dataset.main" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>

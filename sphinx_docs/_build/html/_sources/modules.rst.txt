@@ -14,3 +14,4 @@ TRAIL2023-Nantes
    logger
    prep_coco
    test
+   train
