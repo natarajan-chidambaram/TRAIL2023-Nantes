@@ -12,6 +12,7 @@ pycocotools
 transformers
 wandb
 wget
+myst-parser # for reading md files
 sphinx-rtd-theme
 matplotlib>=3.2.2
 opencv-python>=4.6.0
