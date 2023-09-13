@@ -40,14 +40,14 @@ You can also configure directly on the command line :
 
 You will find your images in `bank/data/mysupertest/openpose` along with the base image and the feature extracted.
 
-<div><img width="350" src="docs/images/b_1.png"/></div>
-<div><img width="350" src="docs/images/f_1.png"/></div>
+<div><img width="350" src="https://i.imgur.com/qB4Bt7y.png"/></div>
+<div><img width="350" src="https://i.imgur.com/EAT9vTj.png"/></div>
 
-<div><img width="350" src="docs/images/1_1.png"/></div>
-<div><img width="350" src="docs/images/2_1.png"/></div>
+<div><img width="350" src="https://i.imgur.com/P18ptUz.png"/></div>
+<div><img width="350" src="https://i.imgur.com/xbwEGUK.png"/></div>
 
-<div><img width="350" src="docs/images/3_1.png"/></div>
-<div><img width="350" src="docs/images/4_1.png"/></div>
+<div><img width="350" src="https://i.imgur.com/PNTqd7m.png"/></div>
+<div><img width="350" src="https://i.imgur.com/SM2K4Ne.png"/></div>
 
 
 ## Multi run
@@ -93,7 +93,7 @@ It follows the same configuration that the generation part, with the same file `
 that is, the directory has the name `<name chosen by the user>_<cn model used to generate>`.
 This are of course in the `config.yaml` file and can be changed statically or dynamically.
 
-<img src="docs/images/iqa_measure.png" />
+<img src="https://i.imgur.com/DfYwnC3.png"/>
 
 
 
