@@ -2,7 +2,7 @@
 
 This is a data generation framework that uses stable diffusion with ControlNet. Models can be trained using a mix of real and generated data. They can also be logged and evaluated.
 
-<img src="images/general_pipeline.png" />
+<img src="https://i.imgur.com/1BD7Zk0.png" />
 
 Make sure to install the requirements :
 
@@ -57,10 +57,12 @@ from the config file or direclty like
 ```
 You will find your images in `bank/data/mysupertest_openpose` along with the base image and the feature extracted.
 
-<p float="left">
+<div>
     <img width="350" src="images/b_1.png"/>
+</div>
+<div>
     <img width="350" src="images/f_1.png"/>
-</p>
+</div>
 <p float="left">
     <img width="350" src="docs/images/1_1.png"/>
     <img width="350" src="docs/images/2_1.png"/>
