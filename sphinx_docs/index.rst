@@ -10,7 +10,7 @@ Welcome to Data Augmentation Using Stable Diffusion with ControNet for Object De
    :maxdepth: 2
    :caption: Contents:
 
-   README
+   About <README.md>
    modules
 
 Indices and tables
