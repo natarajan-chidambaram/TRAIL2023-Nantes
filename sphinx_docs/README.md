@@ -1,5 +1,6 @@
 # Data Augmentation with Stable Diffusion for Object Detection using YOLOv8
 
+## Introduction
 This is a data generation framework that uses stable diffusion with ControlNet. Models can be trained using a mix of real and generated data. They can also be logged and evaluated.
 
 <img src="https://i.imgur.com/1BD7Zk0.png" />
