@@ -1,4 +1,4 @@
-TRAIL2023-Nantes
+SDCN
 ================
 
 .. toctree::
