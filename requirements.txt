@@ -2,9 +2,8 @@ accelerate
 controlnet_aux
 diffusers==0.14.0
 gdown
-torchvision
 hydra-core
-mediapipe
+mediapipe==0.10.0
 matplotlib
 numpy
 opencv-contrib-python
@@ -12,6 +11,6 @@ pillow
 pyiqa
 pycocotools
 transformers
+xformers
 wandb
 wget
-sphinx-rtd-theme
