@@ -40,14 +40,14 @@ You can also configure directly on the command line :
 
 You will find your images in `bank/data/mysupertest/openpose` along with the base image and the feature extracted.
 
-<div><img width="350" src="https://i.imgur.com/qB4Bt7y.png"/></div>
-<div><img width="350" src="https://i.imgur.com/EAT9vTj.png"/></div>
+<div style="padding-bottom:10px"><img width="350" src="https://i.imgur.com/qB4Bt7y.png"/></div>
+<div style="padding-bottom:10px"><img width="350" src="https://i.imgur.com/EAT9vTj.png"/></div>
 
-<div><img width="350" src="https://i.imgur.com/P18ptUz.png"/></div>
-<div><img width="350" src="https://i.imgur.com/xbwEGUK.png"/></div>
+<div style="padding-bottom:10px"><img width="350" src="https://i.imgur.com/P18ptUz.png"/></div>
+<div style="padding-bottom:10px"><img width="350" src="https://i.imgur.com/xbwEGUK.png"/></div>
 
-<div><img width="350" src="https://i.imgur.com/PNTqd7m.png"/></div>
-<div><img width="350" src="https://i.imgur.com/SM2K4Ne.png"/></div>
+<div style="padding-bottom:10px"><img width="350" src="https://i.imgur.com/PNTqd7m.png"/></div>
+<div style="padding-bottom:10px"><img width="350" src="https://i.imgur.com/SM2K4Ne.png"/></div>
 
 
 ## Multi run
