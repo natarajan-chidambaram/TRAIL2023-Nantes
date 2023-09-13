@@ -8,7 +8,7 @@ Welcome to Data Augmentation Using Stable Diffusion with ControNet for Object De
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption:
 
    About <README.md>
    modules

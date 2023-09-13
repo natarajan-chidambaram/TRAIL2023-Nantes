@@ -97,7 +97,7 @@ This are of course in the `config.yaml` file and can be changed statically or dy
 
 
 
-## Create YOLO Dataset and Train :
+## Create YOLO Dataset and Train
 
 We use wandb to track and visualize trainings.
 
